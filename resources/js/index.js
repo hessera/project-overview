@@ -22,6 +22,30 @@ function readData() {
     });
 }
 
+function writeData(data) {
+    console.log(data);
+}
+
+//Add data to local browser storage
+function validate() {
+    var index, inputs, value;
+    var valueTmp = [];
+    inputs = document.getElementsByClassName('input');
+    for (index = 0; index < inputs.length; ++index) {
+        name = inputs[index].attributes["name"].value;
+        value = inputs[index].value;
+        if (value == '') {
+            alert('Bitte füllen Sie alle benötigten Felder aus.')
+            break;
+        }
+        //localStorage.setItem(name,value);
+        valueTmp.push([name,value]);
+
+    }
+    writeData(valueTmp);
+    //localStorage.setItem('name',JSON.stringify(test));
+}
+
 /**
  * Views
  */
@@ -49,6 +73,7 @@ function formView(){
     inputId.type = "text";
     inputId.name = "id";
     inputId.id = "id";
+    inputId.className = "input";
     div.appendChild(inputId);
     div.appendChild(newLine);
 
@@ -64,12 +89,26 @@ function formView(){
     inputSum.type = "text";
     inputSum.name = "sum";
     inputSum.id = "sum";
+    inputSum.className = "input";
     div.appendChild(inputSum);
+
+    //Add Action input
+    var inputAction = document.createElement("input");
+    inputAction.type = "hidden";
+    inputAction.name = "action";
+    inputAction.id = "action";
+    inputAction.value = "form"
+    div.appendChild(inputAction);
 
     //Add submit
     var inputSubmit = document.createElement("input");
     inputSubmit.type = "submit";
     div.appendChild(inputSubmit);
+
+    //Add form
+    org_html = document.getElementById("app").innerHTML;
+    new_html = "<form id='my-form'>" + org_html + "</form>";
+    document.getElementById("app").innerHTML = new_html;
 }
 
 function listView(){
@@ -97,4 +136,12 @@ if (action=='list'){
     formView();
 } else {
     homeView();
+}
+
+//Interupt form submit and validate function
+var ele = document.getElementById("my-form");
+if(ele.addEventListener){
+    ele.addEventListener("submit", validate, false);  //Modern browsers
+}else if(ele.attachEvent){
+    ele.attachEvent('onsubmit', validate);            //Old IE
 }
