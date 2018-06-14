@@ -15,15 +15,25 @@ test = [
  * Controller
  */
 function readData() {
-    //var test =  JSON.parse(localStorage.getItem("name"));
+    var test =  JSON.parse(localStorage.getItem("name"));
     var div = document.getElementById('app');
     test.forEach(element => {
         div.innerHTML += 'Input 1: ' + element[0] + 'Input 2: ' + element[1] + '<br>';
     });
 }
 
+//Write data to local storage
 function writeData(data) {
-    console.log(data);
+    var dataTmp
+
+    if (JSON.parse(localStorage.getItem("name"))) {
+        dataTmp =  JSON.parse(localStorage.getItem("name"));
+    } else {
+        dataTmp = []
+    }
+    dataTmp.push(data);
+    localStorage.setItem('name',JSON.stringify(dataTmp));
+    console.log(JSON.parse(localStorage.getItem("name")));
 }
 
 //Add data to local browser storage
@@ -38,22 +48,47 @@ function validate() {
             alert('Bitte füllen Sie alle benötigten Felder aus.')
             break;
         }
-        //localStorage.setItem(name,value);
         valueTmp.push([name,value]);
 
     }
     writeData(valueTmp);
-    //localStorage.setItem('name',JSON.stringify(test));
+}
+
+function navigation() {
+    var div = document.getElementById('app');
+    
+    var home = document.createElement('a');
+    var linkText = document.createTextNode("Home");
+    home.appendChild(linkText);
+    home.title = "Home";
+    home.href = "?action=home";
+    div.appendChild(home);
+
+    var list = document.createElement('a');
+    var linkText = document.createTextNode("List");
+    list.appendChild(linkText);
+    list.title = "List";
+    list.href = "?action=list";
+    div.appendChild(list);
+
+    var form = document.createElement('a');
+    var linkText = document.createTextNode("Form");
+    form.appendChild(linkText);
+    form.title = "Form";
+    form.href = "?action=form";
+    div.appendChild(form);
+
+    var newLine = document.createElement('br');
+    div.appendChild(newLine);
+
+
 }
 
 /**
  * Views
  */
 function homeView(){
-    action = 'home';
-    console.log('home')
-    var div = document.getElementById('app');
-    div.innerHTML = 'Hello from ' + action;
+
 }
 
 function formView(){
@@ -112,10 +147,6 @@ function formView(){
 }
 
 function listView(){
-    console.log('list');
-    var div = document.getElementById('app');
-
-    div.innerHTML = 'Hello from ' + action + '<br>';
     readData();
 }
 
@@ -131,10 +162,13 @@ console.log(url);
 console.log(action);
 
 if (action=='list'){
+    navigation();
     listView();
 } else if (action=='form'){
+    navigation();
     formView();
 } else {
+    navigation();
     homeView();
 }
 
