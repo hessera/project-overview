@@ -36,6 +36,18 @@ function writeData(data) {
     console.log(JSON.parse(localStorage.getItem("name")));
 }
 
+
+function sumUpData() {
+    var test =  JSON.parse(localStorage.getItem("name"));
+    var sum = 0;
+    var div = document.getElementById('app');
+    test.forEach(element => {
+        sum += Number(element[1][1]);  
+    });
+    div.innerHTML += 'Gesamtsumme ' + parseFloat(Math.round(sum * 100) / 100).toFixed(2) + '<br>';
+    
+}
+
 //Add data to local browser storage
 function validate() {
     var index, inputs, value;
@@ -80,9 +92,8 @@ function navigation() {
 
     var newLine = document.createElement('br');
     div.appendChild(newLine);
-
-
 }
+
 
 /**
  * Views
@@ -148,6 +159,19 @@ function formView(){
 
 function listView(){
     readData();
+    sumUpData();
+}
+
+//Load template file depending on action
+function renderHTML(action='home'){
+    var xhr= new XMLHttpRequest();
+    xhr.open('GET', 'resources/template/'+action+'.html', true);
+    xhr.onreadystatechange= function() {
+        if (this.readyState!==4) return;
+        if (this.status!==200) return; // or whatever error handling you want
+        document.getElementById('app').append(this.responseText);
+    };
+    xhr.send();
 }
 
 /**
@@ -164,12 +188,15 @@ console.log(action);
 if (action=='list'){
     navigation();
     listView();
+    renderHTML(action);
 } else if (action=='form'){
     navigation();
     formView();
+    renderHTML(action);
 } else {
     navigation();
     homeView();
+    renderHTML();
 }
 
 //Interupt form submit and validate function
